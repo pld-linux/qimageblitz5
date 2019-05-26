@@ -1,0 +1,51 @@
+--- qimageblitz-0.0.6_p20131029/blitz/CMakeLists.txt.orig	2017-03-15 00:31:04.000000000 +0100
++++ qimageblitz-0.0.6_p20131029/blitz/CMakeLists.txt	2019-05-26 17:56:17.684369553 +0200
+@@ -22,8 +22,12 @@
+ 
+ if (Qt5Core_FOUND)
+   SET(BLITZ_LIB_MAJOR_VERSION "5")
++  SET(BLITZ_NAME qimageblitz5)
++  SET(BLITZ_DEPS Qt5Gui)
+ else()
+   SET(BLITZ_LIB_MAJOR_VERSION "4")
++  SET(BLITZ_NAME qimageblitz)
++  SET(BLITZ_DEPS QtGui)
+ endif()
+ SET(BLITZ_LIB_MINOR_VERSION "0")
+ SET(BLITZ_LIB_PATCH_VERSION "0")
+@@ -62,6 +66,7 @@
+ endif (NOT CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SYSTEM_NAME MATCHES SunOS)
+ 
+ set_target_properties(qimageblitz PROPERTIES
++                            OUTPUT_NAME ${BLITZ_NAME}
+                             VERSION ${BLITZ_LIB_MAJOR_VERSION}.${BLITZ_LIB_MINOR_VERSION}.${BLITZ_LIB_PATCH_VERSION}
+                             SOVERSION ${BLITZ_LIB_MAJOR_VERSION}
+                             DEFINE_SYMBOL MAKE_QIMAGEBLITZ_LIB
+@@ -72,13 +77,13 @@
+     ARCHIVE DESTINATION ${LIB_INSTALL_DIR} 
+ )
+ 
+-install( FILES qimageblitz.h qimageblitz_export.h blitzcpu.h DESTINATION include/qimageblitz COMPONENT Devel )
++install( FILES qimageblitz.h qimageblitz_export.h blitzcpu.h DESTINATION include/${BLITZ_NAME} COMPONENT Devel )
+ 
+ if(NOT WIN32)
+-  configure_file("qimageblitz.pc.cmake" "${CMAKE_CURRENT_BINARY_DIR}/qimageblitz.pc"
++  configure_file("qimageblitz.pc.cmake" "${CMAKE_CURRENT_BINARY_DIR}/${BLITZ_NAME}.pc"
+   @ONLY) 
+ 
+-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/qimageblitz.pc DESTINATION 
++  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${BLITZ_NAME}.pc DESTINATION 
+   ${LIB_INSTALL_DIR}/pkgconfig)  
+ endif(NOT WIN32)
+ 
+--- qimageblitz-0.0.6_p20131029/blitz/qimageblitz.pc.cmake.orig	2017-03-15 00:31:04.000000000 +0100
++++ qimageblitz-0.0.6_p20131029/blitz/qimageblitz.pc.cmake	2019-05-26 17:56:26.894319658 +0200
+@@ -6,6 +6,6 @@
+ Name: Blitz
+ Description: Blitz image effect and filter library
+ Version: @BLITZ_LIB_VERSION_STRING@
+-Requires: QtGui
+-Libs: -L${libdir} -lqimageblitz
++Requires: @BLITZ_DEPS@
++Libs: -L${libdir} -l@BLITZ_NAME@
+ Cflags: -I${includedir}
